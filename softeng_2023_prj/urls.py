@@ -24,7 +24,7 @@ urlpatterns = [
     path('blog/', include('blog.urls')),
     path("admin/", admin.site.urls),
     path('', include('single_pages.urls')),
-    path("", include("todo_app.urls"))
+    path("todo/", include("todo_app.urls"))
 ]
 
 
