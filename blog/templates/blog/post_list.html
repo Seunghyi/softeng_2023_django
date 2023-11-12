@@ -37,7 +37,11 @@
     <div class="row">
         <div class="col-6">
             <div class="card mb-4">
-                <img class="card-img-top" src="https://i.pinimg.com/564x/10/17/0e/10170eaa4265dac1955af5716a475d8e.jpg" alt="Card image cap">
+                {% if p.head_image %}
+                <img class="card-img-top" src="{{ p.head_image.url }}" alt="{{ p }} head image">
+                {% else %}
+                <img class="card-img-top" src="http://picsum.photos/seed/{{ p.id }}/400/100" alt="random-image">
+                {% endif %}
                 <div class="card-body">
                     <h2 class="card-title">{{ p.title }}</h2>
                     <p class="card-text">{{ p.content }}</p>
@@ -45,7 +49,7 @@
                 </div>
                 <div class="card-footer text-muted">
                     Posted on {{ p.created_at }} by
-                    <a hred="#">작성자명</a>
+                    <a href="#">작성자명</a>
                 </div>
             </div>
         </div>
@@ -54,6 +58,8 @@
 
 
 {% endfor %}
+
+
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
