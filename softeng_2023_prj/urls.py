@@ -24,6 +24,8 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 urlpatterns = [
     path('blog/', include('blog.urls')),
     path("admin/", admin.site.urls),
+    path('markdownx/', include('markdownx.urls')),
+    path('accounts/', include('allauth.urls')),
     path('', include('single_pages.urls')),
     path("todo/", include("todo_app.urls"))
 ]

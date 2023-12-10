@@ -1,47 +1,71 @@
-<!DOCTYPE html>
-{% load static %}
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ post.title }} - Blog</title>
-    <link rel="stylesheet" href="{% static 'blog/bootstrap/bootstrap.min.css' %}" media="screen">
-    <script src="https://kit.fontawesome.com/f13d78cf88.js" crossorigin="anonymous"></script>
-</head>
-<body>
-<nav>
-    <a href="/blog/">Blog</a>
-</nav>
-<h1>{{ post.title }}</h1>
-<p>{{ post.created_at }}</p>
-<h4>{{ post.content }}</h4>
-<div class="col-3">
-    {% if post.head_image %}
-    <img class="card-img-top" src="{{ post.head_image.url }}" alt="{{ post }} head image">
-    {% else %}
-    <img class="card-img-top" src="http://picsum.photos/seed/{{ post.id }}/400/100" alt="random-image">
-    {% endif %}
-</div>
+{% extends 'blog/base.html' %}
 
-{% if post.file_upload %}
-<p>
-    {% if post.get_file_ext == "csv" %}
-        <i class="fa-solid fa-file-csv fa-lg" style="color: #f8863a;"></i>
-    {% elif post.get_file_ext == "pdf" %}
-        <i class="fa-solid fa-file-pdf fa-lg" style="color: #f8863a;"></i>
-    {% else %}
-        <i class="fa-solid fa-file fa-lg" style="color: #f8863a;"></i>
-    {% endif %}
-    {{ post.get_file_name }}
+{% block head_title %}
+    {{ post.title }} - Blog
+{% endblock %}
 
-    <a href="{{ post.file_upload.url }}" role="button" download>
-        <i class="fa-solid fa-file-arrow-down"></i>
-    </a></p>
-{% else %}
-<p>첨부파일: 없음</p>
+{% block main_area %}
+    <div id="post-area">
+        {% if post.category %}
+            <span class="badge badge-secondary float-right">{{ post.category }}</span>
+        {% else %}
+            <span class="badge badge-secondary float-right">미분류</span>
+        {% endif %}
+        <h1>{{ post.title }}</h1>
+        <p class="lead">
+            by
+            <a href="#">{{ post.author | upper }}</a>
+        </p>
+
+        <hr>
+
+        {% if user.is_authenticated and user == post.author %}
+            <a class="btn btn-info btn-sm float-right" href="/blog/update_post/{{ post.pk}}/" role="button"><i class="fas fa-pen"></i>  Edit Post</a>
+        {% endif %}
+
+        <p>{{ post.created_at }}</p>
+        <h4>{{ post.get_content_markdown | safe }}</h4>
+        <div class="col-3">
+            {% if post.head_image %}
+            <img class="card-img-top" src="{{ post.head_image.url }}" alt="{{ post }} head image">
+            {% else %}
+            <img class="card-img-top" src="http://picsum.photos/seed/{{ post.id }}/400/100" alt="random-image">
+            {% endif %}
+        </div>
+
+        {% if post.tags.exists %}
+            <i class="fas fa-tags"></i>
+            {% for tag in post.tags.iterator %}
+                <a href="{{ tag.get_absolute_url }}"><span class="badge badge-pill badge-light">{{ tag }}</span></a>
+            {% endfor %}
+            <br/>
+            <br/>
+        {% endif %}
+
+        {% if post.file_upload %}
+        <p>
+            {% if post.get_file_ext == "csv" %}
+                <i class="fa-solid fa-file-csv fa-lg" style="color: #f8863a;"></i>
+            {% elif post.get_file_ext == "pdf" %}
+                <i class="fa-solid fa-file-pdf fa-lg" style="color: #f8863a;"></i>
+            {% else %}
+                <i class="fa-solid fa-file fa-lg" style="color: #f8863a;"></i>
+            {% endif %}
+            {{ post.get_file_name }}
+
+            <a href="{{ post.file_upload.url }}" role="button" download>
+                <i class="fa-solid fa-file-arrow-down"></i>
+            </a></p>
+        {% else %}
+        <p>첨부파일: 없음</p>
 {% endif %}
 
-
 <hr/>
-<h3>댓글</h3>
-</body>
-</html>
+    </div>
+
+    <div id="comment-area">
+        <h3>댓글</h3>
+        </body>
+        </html>
+    </div>
+{% endblock %}
